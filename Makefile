@@ -6,3 +6,6 @@ test:
 compose:
 	@docker-compose build
 	@docker-compose up
+
+run:
+	@docker-compose up
