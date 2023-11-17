@@ -34,24 +34,23 @@ class Users(Resource):
 
 
 class User(Resource):
-    
-    
+
     def post(self):
         data = _user_parser.parse_args()
-        
+
         if not CPF().validate(data['cpf']):
             return {'message': 'CPF is invalid!'}, 400
-        
+
         try:
             response = UserModel(**data).save()
         except NotUniqueError:
             return {'message': 'CPF already exists in database'}
         return {'message': f'User {response.id} successfully created!'}
-        
+
     def get(self, cpf):
         response = UserModel.objects(cpf=cpf)
-        
+
         if response:
             return jsonify(response)
-        
+
         return {'message': 'User does not exist in database'}
