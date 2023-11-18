@@ -1,4 +1,4 @@
-APP = restapi
+APP = jlrestapiflask
 
 test:
 	@flake8 . --exclude .venv
@@ -13,5 +13,5 @@ run:
 
 heroku:
 	@heroku container:login
-	@sudo heroku container:push -a jlrestapiflask web
-	@sudo heroku container:release -a jlrestapiflask web
+	@sudo heroku container:push -a $(APP) web
+	@sudo heroku container:release -a $(APP) web
