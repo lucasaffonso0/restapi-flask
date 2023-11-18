@@ -13,5 +13,5 @@ run:
 
 heroku:
 	@heroku container:login
-	@sudo heroku container:push -a $(APP) web
-	@sudo heroku container:release -a $(APP) web
+	@heroku container:push -a $(APP) web
+	@heroku container:release -a $(APP) web
