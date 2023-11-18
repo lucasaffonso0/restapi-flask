@@ -28,6 +28,11 @@ _user_parser.add_argument('birth_date',
                           help='This field cannot be blank.')
 
 
+class Up(Resource):
+    def get(self):
+        return 'Made with love, Jose Lucas'
+
+
 class Users(Resource):
     def get(self):
         return jsonify(UserModel.objects())
