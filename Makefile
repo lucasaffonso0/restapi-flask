@@ -1,4 +1,4 @@
-APP = jlrestapiflask
+APP = restapi-flask
 
 test:
 	@bandit -r . -x '*/.venv/*','*/tests/*'
@@ -13,7 +13,29 @@ compose:
 run:
 	@docker-compose up
 
-heroku:
-	@heroku container:login
-	@heroku container:push -a $(APP) web
-	@heroku container:release -a $(APP) web
+setup-dev:
+	@kind create cluster --config kubernetes/config/config.yaml
+	@kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml
+	@kubectl wait --namespace ingress-nginx \
+		--for=condition=ready pod \
+		--selector=app.kubernetes.io/component=controller \
+		--timeout=300s
+	@helm upgrade \
+	--install \
+	--set auth.rootPassword="root" \
+	mongodb kubernetes/charts/mongodb
+	@kubectl wait \
+		--for=condition=ready pod \
+		--selector=app.kubernetes.io/component=mongodb \
+		--timeout=300s
+
+teardown-dev:
+	@kind delete clusters kind
+
+deploy-dev:
+	@docker build -t $(APP):latest .
+	@kind load docker-image $(APP):latest
+	@kubectl apply -f kubernetes/manifests
+	@kubectl rollout restart deploy $(APP)
+
+dev: setup-dev deploy-dev
