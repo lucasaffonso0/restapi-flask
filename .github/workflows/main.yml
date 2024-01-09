@@ -22,6 +22,12 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - name: Deploy to Heroku
+      - name: configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          role-to-assume: arn:aws:iam::298562162259:role/restapi-gh-actions-oidc-role
+          role-session-name: samplerolesession
+          aws-region: us-west-2
+      - name: Build Docker image
         run: |
           aws sts get-caller-identity
