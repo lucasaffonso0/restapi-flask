@@ -24,9 +24,6 @@ class ProdConfig:
     MONGODB_PASSWORD = os.getenv("MONGODB_PASSWORD")
     MONGODB_HOST = os.getenv("MONGODB_HOST")
     MONGODB_DB = os.getenv("MONGODB_DB")
-    REPLICASET = "replicaSet=atlas-qkejxn-shard-0"
-    AUTH = "authSource=admin&retryWrites=true&w=majority"
-    MONGODB_SETTINGS = {
-        "host": "mongodb://%s:%s@%s:27017/%s?ssl=true&%s&%s"
-        % (MONGODB_USER, MONGODB_PASSWORD, MONGODB_HOST, MONGODB_DB, REPLICASET, AUTH)
-    }
+
+    URI = f"mongodb://{MONGODB_USER}:{MONGODB_PASSWORD}@{MONGODB_HOST}/{MONGODB_DB}"
+    MONGODB_SETTINGS = {"host": URI}
