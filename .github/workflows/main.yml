@@ -33,4 +33,11 @@ jobs:
       - name: Build Docker image
         run: |
           aws sts get-caller-identity
-          aws ecr get-login-password --region us-west-2 | docker login --username AWS --password-stdin 298562162259.dkr.ecr.us-west-2.amazonaws.com/restapi-ecr
+
+          aws ecr get-login-password --region us-west-2 | docker login --username AWS --password-stdin ${ecr_registry}
+
+          sha=${{ github.sha }}
+          short_sha=${sha:0:7}
+
+          docker build -t ${ecr_registry}/${ecr_repository}:dev-${short_sha} .
+          docker push ${ecr_registry}/${ecr_repository}:dev-${short_sha}
