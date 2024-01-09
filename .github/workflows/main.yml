@@ -59,3 +59,5 @@ jobs:
       - name: Deploy to Kubernetes
         run: |
           aws eks update-kubeconfig --region us-west-2 --name restapi-cluster
+
+          kubectl get node
