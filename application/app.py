@@ -35,7 +35,7 @@ class HealthCheck(Resource):
 
 class Up(Resource):
     def get(self):
-        return "Made with love, Jose Lucas"
+        return "Made with love, José Lucas!"
 
 
 class Users(Resource):
