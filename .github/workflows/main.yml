@@ -70,4 +70,5 @@ jobs:
           helm upgrade --install \
           --namespace default \
           --set image.tag=${TAG} \
+          --set image.registry=${{ secrets.ECR_REGISTRY }}/${{ secrets.ECR_REPOSITORY }} \
           restapi kubernetes/charts/restapi-flask
