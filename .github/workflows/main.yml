@@ -67,4 +67,7 @@ jobs:
         run: |
           aws eks update-kubeconfig --region us-west-2 --name restapi-cluster
 
-          echo ${TAG}
+          helm upgrade --install \
+          --namespace default \
+          --set image.tag=${TAG} \
+          restapi kubernetes/charts/restapi-flask
