@@ -22,6 +22,8 @@ jobs:
     permissions:
       id-token: write
       contents: read
+    outputs:
+      image_tag: ${{ steps.build.outputs.image_tag }}
     steps:
       - uses: actions/checkout@v3
       - name: configure aws credentials
@@ -30,7 +32,8 @@ jobs:
           role-to-assume: arn:aws:iam::298562162259:role/restapi-gh-actions-oidc-role
           role-session-name: samplerolesession
           aws-region: us-west-2
-      - name: Build Docker image
+      - id: build
+        name: Build Docker image
         run: |
           aws sts get-caller-identity
 
@@ -41,6 +44,8 @@ jobs:
 
           docker build -t ${{ secrets.ECR_REGISTRY }}/${{ secrets.ECR_REPOSITORY }}:dev-${short_sha} .
           docker push ${{ secrets.ECR_REGISTRY }}/${{ secrets.ECR_REPOSITORY }}:dev-${short_sha}
+
+          echo "image_tag=dev-${short_sha}" >> "$GITHUB_OUTPUT"
 
   deploy:
     needs: build
@@ -56,8 +61,10 @@ jobs:
           role-to-assume: arn:aws:iam::298562162259:role/restapi-gh-actions-oidc-role
           role-session-name: samplerolesession
           aws-region: us-west-2
-      - name: Deploy to Kubernetes
+      - env:
+          TAG: ${{ needs.build.outputs.image_tag }}
+        name: Deploy to Kubernetes
         run: |
           aws eks update-kubeconfig --region us-west-2 --name restapi-cluster
 
-          kubectl get node
+          echo ${TAG}
